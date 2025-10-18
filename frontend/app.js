@@ -1,4 +1,4 @@
-const BACKEND_BASE = window.BACKEND_BASE || "http://localhost:3000";
+const BACKEND_BASE = window.BACKEND_BASE || "";
 
 
 const qs = (sel) => document.querySelector(sel);
