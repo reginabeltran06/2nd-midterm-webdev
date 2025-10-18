@@ -1,8 +1,6 @@
-// === Configuration ===
 const BACKEND_BASE = (window.BACKEND_BASE || "http://localhost:3000").replace(/\/$/, "");
 
 
-// === Helpers ===
 const qs = (sel) => document.querySelector(sel);
 const qsa = (sel) => Array.from(document.querySelectorAll(sel));
 
@@ -10,6 +8,7 @@ const qsa = (sel) => Array.from(document.querySelectorAll(sel));
 const DEFAULT_IMG = "https://placehold.co/600x400?text=No+Image";
 
 function setList(listEl, items) {
+    if (!listEl) return;
     listEl.innerHTML = "";
     if (!items || !items.length) {
         const li = document.createElement("li");
@@ -58,7 +57,7 @@ function renderCharacter(c) {
     qs('#char-family').textContent = c.family || 'Unknown';
     qs('#char-born').textContent = c.born || 'Unknown';
     qs('#char-died').textContent = c.died || 'Unknown';
-    setList(qs('#char-titles'), c.titles);
+    setList(qs('#char-titles-list'), c.title);
     setList(qs('#char-aliases'), c.aliases);
     qs('#char-crest').textContent = c.familyCrest || 'Unknown';
 }
@@ -130,5 +129,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initial load
     try { await loadBeginning(); }
-    catch { showAlert('danger', 'Failed to load initial character. Ensure the backend is running.'); }
+     catch (error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+            showAlert('danger', 'Failed to connect to backend server. Ensure it is running on localhost:3000.');
+        } else {
+            showAlert('danger', 'Failed to load initial character.');
+        }
+    }
 });

@@ -26,7 +26,7 @@ async function mergeCharacterData(throneChar) {
   let iceChar = null;
 
   try {
-    const res = await axios.get(`${ICE_API}?name=${encodeURIComponent(name)}`);
+    const res = await axios.get(`${ICE_API}?name=${encodeURIComponent(name.trim())}`);
     iceChar = res.data[0] || null;
   } catch (err) {
     console.error("Error fetching from Ice & Fire:", err.message);
@@ -66,22 +66,25 @@ app.get("/characters/prev", async (req, res) => {
 app.get("/characters/search", async (req, res) => {
   await loadThronesCharacters();
   const { name } = req.query;
-  const found = thronesCharacters.find((c) =>
+  const foundIndex = thronesCharacters.findIndex((c) =>
     c.fullName.toLowerCase().includes(name.toLowerCase())
   );
 
-  if (!found) {
+  if (foundIndex ===-1 ) {
     return res.status(404).json({
       error: "Character not found",
       message: "Go back to the beginning?",
     });
   }
 
-  const merged = await mergeCharacterData(found);
+  currentIndex = foundIndex;
+
+
+  const merged = await mergeCharacterData(thronesCharacters[currentIndex]);
   res.json(merged);
 });
 
-app.get("/characters/reset", async (req, res) => {    //usar este si search falla y necesita volver al   inicio
+app.get("/characters/reset", async (req, res) => {    //usar este si search falla y necesita volver al inicio
   await loadThronesCharacters();
   currentIndex = 0;
   const merged = await mergeCharacterData(thronesCharacters[currentIndex]);
