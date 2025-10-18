@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('frontend'));
+
 
 const ICE_API = "https://www.anapioficeandfire.com/api/characters";
 const GOT_API = "https://thronesapi.com/api/v2/Characters";
